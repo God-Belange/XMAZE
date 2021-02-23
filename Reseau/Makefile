@@ -2,29 +2,29 @@
 # Makefile pour generer les executables du pont virtuel
 #
 
-OBJS_SWITCH=libreseau.o virtual_bridge.o
-OBJS_CLIENT=libreseau.o virtual_client.o
+OBJS_SWITCH=libreseau.o serveur.o
+OBJS_CLIENT=libreseau.o client.o
 
 CFLAGS += -Wall -DDEBUG
 
-all: virtual_bridge virtual_client
+all: serveur client
 
 #
 # La cible de nettoyage
 #
 
 clean: 
-	rm -f core *.o virtual_bridge virtual_client
+	rm -f core *.o serveur client
 
 #
 # Les cibles
 #
 
-virtual_bridge:	$(OBJS_SWITCH)
+serveur:	$(OBJS_SWITCH)
 	$(CC) $(CFLAGS) -o $@ $(OBJS_SWITCH)
-virtual_client:	$(OBJS_CLIENT)
+client:	$(OBJS_CLIENT)
 	$(CC) $(CFLAGS) -o $@ $(OBJS_CLIENT)
 
 libreseau.o: libreseau.c libreseau.h
-virtual_bridge.o: virtual_bridge.c libreseau.h
-virtual_client.o: virtual_client.c libreseau.h
+serveur.o: serveur.c libreseau.h
+client.o: client.c libreseau.h
