@@ -5,7 +5,8 @@
 OBJS_SWITCH=libreseau.o serveur.o
 OBJS_CLIENT=libreseau.o client.o
 
-CFLAGS += -Wall -DDEBUG
+BIBLIOTHEQUES =-L ../Flux_execution -lflux_execution
+CFLAGS += -Wall -DDEBUG  -I ../Flux_execution
 
 all: serveur client
 
@@ -21,7 +22,7 @@ clean:
 #
 
 serveur:	$(OBJS_SWITCH)
-	$(CC) $(CFLAGS) -o $@ $(OBJS_SWITCH)
+	$(CC) $(CFLAGS) -o $@ $(OBJS_SWITCH) $(BIBLIOTHEQUES)
 client:	$(OBJS_CLIENT)
 	$(CC) $(CFLAGS) -o $@ $(OBJS_CLIENT)
 
