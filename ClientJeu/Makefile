@@ -6,7 +6,7 @@ SOURCES = $(wildcard *.c)
 OBJETS = $(SOURCES:.c=.o)
 BIBLIOTHEQUES = -L ../Reseau -lreseau
 CFLAGS += -Wall -DDEBUG -I ../Reseau
-CIBLE = labyrinthe
+CIBLE = client
 
 #
 # Nom de la cible principale

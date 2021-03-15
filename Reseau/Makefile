@@ -5,6 +5,7 @@
 SOURCES = $(wildcard *.c)
 OBJETS = $(SOURCES:.c=.o)
 CIBLE = libreseau.a
+CFLAGS += -Wall
 
 #
 # Nom de la cible principale

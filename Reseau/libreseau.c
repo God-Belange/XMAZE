@@ -81,32 +81,6 @@ if(statut<0) return -1;
 return s;
 }
 
-/**** Fonctions de gestion des interfaces virtuelles ****/
-
-/** Ouverture d'une interface Ethernet virtuelle **/
-
-int creationInterfaceVirtuelle(char *nom)
-{
-struct ifreq interface;
-int fd,erreur;
-
-/* Ouverture du peripherique principal */
-if((fd=open(TAP_PRINCIPAL,O_RDWR))<0) return fd;
-
-/* Preparation de la structure */
-memset(&interface,0,sizeof(interface));
-interface.ifr_flags=IFF_TAP|IFF_NO_PI;
-if(nom!=NULL) strncpy(interface.ifr_name,nom,IFNAMSIZ);
-
-/* Creation de l'interface */
-if((erreur=ioctl(fd,TUNSETIFF,(void *)&interface))<0){ close(fd); return erreur; }
-
-/* Recuperation du nom de l'interface */
-if(nom!=NULL) strcpy(nom,interface.ifr_name);
-
-return fd;
-}
-
 int connexionServeur(char *hote,char *service){
 struct addrinfo precisions,*resultat,*origine;
 int statut;
@@ -133,4 +107,19 @@ if(connect(s,resultat->ai_addr,resultat->ai_addrlen)<0) return -1;
 freeaddrinfo(origine);
 
 return s;
+}
+
+int boucleServeur(int ecoute,int (*traitement)(int))
+{
+int dialogue;
+
+while(1){
+
+    /* Attente d'une connexion */
+    if((dialogue=accept(ecoute,NULL,NULL))<0) return -1;
+
+    /* Passage de la socket de dialogue a la fonction de traitement */
+    if(traitement(dialogue)<0){ shutdown(ecoute,SHUT_RDWR); return 0;}
+
+    }
 }

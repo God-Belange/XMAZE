@@ -4,9 +4,9 @@
 
 SOURCES = $(wildcard *.c)
 OBJETS = $(SOURCES:.c=.o)
-BIBLIOTHEQUES = -L ../Reseau -lreseau
-CFLAGS += -Wall -DDEBUG -I ../Reseau
-CIBLE = labyrinthe
+BIBLIOTHEQUES = -L ../Reseau -lreseau -L ../Flux_execution -lflux_execution
+CFLAGS += -Wall -DDEBUG -I ../Reseau -I ../Flux_execution
+CIBLE = serveur
 
 #
 # Nom de la cible principale
