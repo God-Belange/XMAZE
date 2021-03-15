@@ -42,18 +42,6 @@ if(s<0){ fprintf(stderr,"Erreur de connexion au serveur\n"); exit(EXIT_FAILURE);
 	fprintf(stdout,"Connexion au serveur effectuée\n");
 #endif   
 
-// Ouverture de l'interface reseau
-  // 	char interface[MAX_NOM_INTERFACE]=NOM_INTERFACE;
-	// int fd=creationInterfaceVirtuelle(interface);
-	// if(fd<0){
-	// 	fprintf(stderr,"Erreur de la création d'une interface virtuelle\n");
-	// 	exit(EXIT_FAILURE);
-	// }
-	// #ifdef DEBUG
-	// fprintf(stdout,"Interface virtuelle créée\n");
-	// #endif
-// Communication avec le serveur
-
 /* Boucle de communication avec le serveur */
 struct pollfd descripteurs[2];
 descripteurs[0].fd=s;

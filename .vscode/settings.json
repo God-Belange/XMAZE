@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "if_tun.h": "c",
-        "libflux_execution.h": "c",
-        "libgraph.h": "c"
-    }
-}
