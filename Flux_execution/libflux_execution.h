@@ -2,6 +2,7 @@
 #define FLUX_EXECUTION_H
 /**** Bibliotheque graphique (definitions) ****/
 
-int gestionClient(int s);
+void creat_task(void (*f_prime)(void *),void *arg,int size);
+void * f_prime(void * generic);
 
 #endif /* FUNCTIONS_H */

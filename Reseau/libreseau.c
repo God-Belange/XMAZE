@@ -25,7 +25,6 @@
 #include "libreseau.h"
 
 
-
 /**** Constantes ****/
 
 #define TAP_PRINCIPAL	"/dev/net/tun"
@@ -119,7 +118,11 @@ while(1){
     if((dialogue=accept(ecoute,NULL,NULL))<0) return -1;
 
     /* Passage de la socket de dialogue a la fonction de traitement */
-    if(traitement(dialogue)<0){ shutdown(ecoute,SHUT_RDWR); return 0;}
+   if(traitement(dialogue)<0)
+   { 
+    shutdown(ecoute,SHUT_RDWR);
+    return 0;
+   }
 
     }
 }

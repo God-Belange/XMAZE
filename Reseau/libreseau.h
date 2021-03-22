@@ -16,5 +16,4 @@
 int connexionServeur(char *hote,char *service);
 int initialisationServeur(char *service,int connexions);
 int read_fixed(int descripteur,unsigned char *array,int size);
-int creationInterfaceVirtuelle(char *nom);
 int boucleServeur(int ecoute,int (*traitement)(int));

@@ -13,17 +13,12 @@
 
 /** Quelques constantes **/
 
-/** Variables globales **/
-
-/** Fonctions **/
-
-// Boucle serveur
-
 #define MAX_LIGNE 50
 
 //Gestion Client
-int gestionClient(int s){
+void gestionClient(void *argument){
 
+int s=*(int *)argument;
 /* Obtient une structure de fichier */
 FILE *dialogue=fdopen(s,"a+");
 if(dialogue==NULL){ perror("gestionClient.fdopen"); exit(EXIT_FAILURE); }
@@ -35,9 +30,13 @@ while(fgets(ligne,MAX_LIGNE,dialogue)!=NULL)
 
 /* Termine la connexion */
 fclose(dialogue);
-return 0;
-}
 
+}
+int gestion_client_leger(int dialogue){
+
+  creat_task(gestionClient,&dialogue,sizeof(int));
+  return 0;
+}
 
 /* Fonction principale */
 int main(int argc,char *argv[]){
@@ -56,7 +55,7 @@ int s;
 s=initialisationServeur(service,MAX_CONNEXIONS);
 // Traitement des connexions et des messages
 /* Lancement de la boucle d'ecoute */
-boucleServeur(s,gestionClient);
+boucleServeur(s,gestion_client_leger);
 
 return 0;
 }
