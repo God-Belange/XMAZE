@@ -5,7 +5,7 @@
 SOURCES = $(wildcard *.c)
 OBJETS = $(SOURCES:.c=.o)
 BIBLIOTHEQUES = -L ../Reseau -lreseau -L ../Flux_execution -lflux_execution -lpthread
-CFLAGS += -Wall -DDEBUG -I ../Reseau -I ../Flux_execution
+CFLAGS += -Wall -DDEBUG -I ../Reseau -I ../Flux_execution -I ../Protocole
 CIBLE = serveur
 
 #
