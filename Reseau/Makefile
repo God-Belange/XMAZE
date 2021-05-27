@@ -5,7 +5,7 @@
 SOURCES = $(wildcard *.c)
 OBJETS = $(SOURCES:.c=.o)
 CIBLE = libreseau.a
-CFLAGS += -Wall
+CFLAGS += -Wall -I ../Protocole
 
 #
 # Nom de la cible principale

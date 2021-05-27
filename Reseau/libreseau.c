@@ -23,6 +23,7 @@
 
 
 #include "libreseau.h"
+#include "lib_protocole.h"
 
 
 /**** Constantes ****/
@@ -183,12 +184,25 @@ return s;
 
 /* Recevoir un message UDP dans les paramètres de sortie, l'adresse est retournée */
 
-void *recevoirUDP(int s,unsigned char *message,int *taille){
+//void *recevoirUDP(int s, unsigned char *message, int *taille){
+/*
+void *recevoirUDP(int s, pr_udp_identite_t *message, int *taille){
 struct sockaddr_storage *adresse=malloc(sizeof(struct sockaddr_storage));
 socklen_t mtaille=sizeof(struct sockaddr_storage);
 int nboctets=recvfrom(s,message,*taille,0,(struct sockaddr *)adresse,&mtaille);
 if(nboctets<0){ *taille=-1; return NULL; }
 *taille=nboctets;
+return adresse;
+}
+*/
+
+void *recevoirUDP(int s, void *message, int taille){
+struct sockaddr_storage *adresse=malloc(sizeof(struct sockaddr_storage));
+socklen_t mtaille=sizeof(struct sockaddr_storage);
+int nboctets=recvfrom(s,message,taille,0,(struct sockaddr *)adresse,&mtaille);
+if(nboctets<0){ taille=-1; return NULL; trouve = 0;}
+taille=nboctets;
+trouve = 1;
 return adresse;
 }
 

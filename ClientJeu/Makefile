@@ -5,7 +5,7 @@
 SOURCES = $(wildcard *.c)
 OBJETS = $(SOURCES:.c=.o)
 BIBLIOTHEQUES = -L ../Reseau -lreseau
-CFLAGS += -Wall -DDEBUG -I ../Reseau
+CFLAGS += -Wall -DDEBUG -I ../Reseau -I ../Protocole
 CIBLE = client
 
 #
