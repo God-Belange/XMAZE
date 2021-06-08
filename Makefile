@@ -16,7 +16,7 @@ MAKE = make
 # Constantes du projet
 #
 
-DIRS=Graphique Labyrinthe  Flux_execution Reseau  ServeurJeu ClientJeu
+DIRS=Graphique Labyrinthe  Flux_execution Reseau  Gestio_list ServeurJeu ClientJeu 
 
 #
 # Cible principale

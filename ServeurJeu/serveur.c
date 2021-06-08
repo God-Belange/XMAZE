@@ -5,21 +5,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
+#include <string.h>
 
 #include "libreseau.h"
 #include "libflux_execution.h"
 #include "lib_protocole.h"
+#include "libgestion_list.h"
 
 /** Quelques constantes **/
 
 #define MAX_LIGNE     50
 #define MAX_SERVICE   64
-typedef struct SocketPort{ 
-  int balise;
-  unsigned short port;
-}SocketPort;
+#define OLDER 1
+#define EARLIER (-1)
+#define EQUAL 0
+#define MAX_LENGTH    10
 
-//Gestion Client
+
+ListClient list;
+int id_client;
+
+
+/** Gestion clients 
+   ________________**/
+
 void gestionClient(void *argument){
 
 int s=*(int *)argument;
@@ -29,8 +39,56 @@ if(dialogue==NULL){ perror("gestionClient.fdopen"); exit(EXIT_FAILURE); }
 
 /* Echo */
 char ligne[MAX_LIGNE];
-while(fgets(ligne,MAX_LIGNE,dialogue)!=NULL)
-  fprintf(dialogue,"> %s",ligne);
+while(fgets(ligne,MAX_LIGNE,dialogue)!=NULL){ 
+    //fprintf(dialogue,"> %s\n",ligne);
+
+    char delimit[] = " ";
+    char* token = NULL;
+    char *ptr = ligne;
+    Client client;
+    char ligne1[MAX_LIGNE];
+    char ligne2[MAX_LIGNE];
+
+    token = strtok(ptr, delimit);
+    if (token != NULL){ 
+        for (unsigned int i = 0; i < strlen(token); i++) {
+         ligne1[i]=token[i];
+        }
+        token = strtok(NULL, delimit);
+        if(token!=NULL){ 
+            for (unsigned int u = 0; u < strlen(token); u++) {
+            ligne2[u]=token[u];
+            }
+            if(strcmp(ligne1,CMD_CONNECTION)==0){ 
+
+              strcpy(client.pseudo,ligne2);
+              id_client++;
+              client.socket=s;
+              sprintf(client.id,"%d",id_client);
+
+              if(add_Client_to_list(&list,client)==true){
+                char input[MAX_LIGNE];
+                sprintf(input, "idclient %d", id_client);
+                fputs(input,dialogue);
+              }else fprintf(dialogue,"> Vous etes déjà inscrit\n");
+
+            }else if (strcmp(ligne1,CMD_ENDGAME)==0){
+
+              strcpy(client.pseudo,ligne2);
+              if(delete_Client_to_list(&list,client)==true){
+                char message[80];
+                sprintf(message, "Le pseudo %s a ete supprime ", client.pseudo);
+                fputs(message,dialogue);
+              }
+
+            }
+          }else  fprintf(dialogue,"> Format Commande erroné\n");
+    }else fprintf(dialogue,"> Format Commande erroné\n"); 
+   display_Client_list(list);
+}
+
+
+  
 
 /* Termine la connexion */
 fclose(dialogue);
@@ -48,17 +106,12 @@ void broadcast(void *argument)
   SocketPort  *Socket_Port=argument;
   int port=Socket_Port->port;
   int s=Socket_Port->balise;
- #ifdef DEBUG
-fprintf(stdout,"je suis la %d\n",port);
-#endif
   
-  pr_udp_identite_t paqu_identite = {7,port,1800};
+  pr_udp_identite_t paqu_identite = {7,port,PORT_TOUCHES_UDP};
    
   pr_udp_identite_t *paqu_identite_ptr = &paqu_identite;
   char *hote="255.255.255.255";
   
-  // unsigned char myMessage [] = "Serveur dispo, envoie un paquet pour avoir le paquet UDP de connexion";
-  // unsigned char *message = &myMessage[0];
   char service[MAX_SERVICE];
   sprintf(service,"%d",port);
   void *adresse = creationAddresseUDP(hote,service);
@@ -93,6 +146,8 @@ fprintf(stdout,"Port : %s\n",service);
 
 int balise;
 balise=initialisationSocketUDP(service);
+
+printf("%d\n",balise);
 
 SocketPort Socket_Port;
 Socket_Port.balise = balise;

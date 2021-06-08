@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
-
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
@@ -184,26 +184,20 @@ return s;
 
 /* Recevoir un message UDP dans les paramètres de sortie, l'adresse est retournée */
 
-//void *recevoirUDP(int s, unsigned char *message, int *taille){
-/*
-void *recevoirUDP(int s, pr_udp_identite_t *message, int *taille){
-struct sockaddr_storage *adresse=malloc(sizeof(struct sockaddr_storage));
-socklen_t mtaille=sizeof(struct sockaddr_storage);
-int nboctets=recvfrom(s,message,*taille,0,(struct sockaddr *)adresse,&mtaille);
-if(nboctets<0){ *taille=-1; return NULL; }
-*taille=nboctets;
-return adresse;
-}
-*/
+#define MAX_NOM	1024
 
-void *recevoirUDP(int s, void *message, int taille){
-struct sockaddr_storage *adresse=malloc(sizeof(struct sockaddr_storage));
-socklen_t mtaille=sizeof(struct sockaddr_storage);
-int nboctets=recvfrom(s,message,taille,0,(struct sockaddr *)adresse,&mtaille);
-if(nboctets<0){ taille=-1; return NULL; trouve = 0;}
-taille=nboctets;
-trouve = 1;
-return adresse;
+void *recevoirUDP(int s, void *message, int *taille){
+struct sockaddr_storage adresse;
+socklen_t mtaille=sizeof(adresse);
+int nboctets;
+nboctets=recvfrom(s,message,*taille,0,(struct sockaddr *)&adresse,&mtaille);
+*taille=nboctets;
+if(nboctets>0){
+  char *nom=malloc(MAX_NOM);
+  getnameinfo((struct sockaddr *)&adresse,mtaille,nom,MAX_NOM,NULL,0,0);
+  return nom;
+  }
+return NULL;
 }
 
 /* Création d'une adresse socket UDP pour transmission */
