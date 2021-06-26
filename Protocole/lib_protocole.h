@@ -25,7 +25,7 @@
 #define CMD_CONNECTION "pseudo"
 #define CMD_ENDGAME "endgame"
 #define CMD_CRASH "c_cho"
-#define CMD_IDCLIENT "iencli"
+#define CMD_IDCLIENT "idclient"
 
 /*** Définition des structures de communication UDP ***/
 

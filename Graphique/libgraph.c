@@ -141,6 +141,7 @@ switch(event.type){
       case SDLK_UP: *touche=TOUCHE_HAUT; break;
       case SDLK_DOWN: *touche=TOUCHE_BAS; break;
       case SDLK_SPACE: *touche=TOUCHE_ESPACE; break;
+      case SDLK_c: *touche=TOUCHE_TCHAT; break;
       default: *touche=TOUCHE_AUTRE; break;
       }
     break;

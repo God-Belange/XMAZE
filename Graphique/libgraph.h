@@ -15,6 +15,7 @@
 #define TOUCHE_BAS	'v'
 #define TOUCHE_ESPACE	' '
 #define TOUCHE_AUTRE	-1
+#define TOUCHE_TCHAT 'c'
 
 /** Prototypes **/
 

@@ -4,8 +4,8 @@
 
 SOURCES = $(wildcard *.c)
 OBJETS = $(SOURCES:.c=.o)
-BIBLIOTHEQUES = -L ../Reseau -lreseau
-CFLAGS += -Wall -DDEBUG -I ../Reseau -I ../Protocole
+BIBLIOTHEQUES = -L ../Reseau -lreseau -L ../Graphique -lgraph -lSDL2_gfx -lSDL2
+CFLAGS += -Wall -std=c99 -D_DEFAULT_SOURCE -DDEBUG -I ../Reseau -I ../Protocole -I ../Graphique
 CIBLE = client
 
 #

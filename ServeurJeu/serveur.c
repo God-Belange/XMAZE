@@ -15,11 +15,7 @@
 
 /** Quelques constantes **/
 
-#define MAX_LIGNE     50
 #define MAX_SERVICE   64
-#define OLDER 1
-#define EARLIER (-1)
-#define EQUAL 0
 #define MAX_LENGTH    10
 
 
@@ -36,11 +32,13 @@ int s=*(int *)argument;
 /* Obtient une structure de fichier */
 FILE *dialogue=fdopen(s,"a+");
 if(dialogue==NULL){ perror("gestionClient.fdopen"); exit(EXIT_FAILURE); }
-
+ char message[80];
+  sprintf(message, "Inscrivez vous en envoyant votre pseudo\n ");
+  fputs(message,dialogue);
 /* Echo */
 char ligne[MAX_LIGNE];
 while(fgets(ligne,MAX_LIGNE,dialogue)!=NULL){ 
-    //fprintf(dialogue,"> %s\n",ligne);
+   // fprintf(dialogue,"> %s\n",ligne);
 
     char delimit[] = " ";
     char* token = NULL;
@@ -68,7 +66,7 @@ while(fgets(ligne,MAX_LIGNE,dialogue)!=NULL){
 
               if(add_Client_to_list(&list,client)==true){
                 char input[MAX_LIGNE];
-                sprintf(input, "idclient %d", id_client);
+                sprintf(input, "idclient %d\n", id_client);
                 fputs(input,dialogue);
               }else fprintf(dialogue,"> Vous etes déjà inscrit\n");
 
@@ -77,7 +75,7 @@ while(fgets(ligne,MAX_LIGNE,dialogue)!=NULL){
               strcpy(client.pseudo,ligne2);
               if(delete_Client_to_list(&list,client)==true){
                 char message[80];
-                sprintf(message, "Le pseudo %s a ete supprime ", client.pseudo);
+                sprintf(message, "Le pseudo %s a ete supprime\n ", client.pseudo);
                 fputs(message,dialogue);
               }
 
@@ -99,6 +97,10 @@ int gestion_client_leger(int dialogue){
   creat_task(gestionClient,&dialogue,sizeof(int));
   return 0;
 }
+
+
+/** Gestion UDP broadcast 
+   ________________**/
 
 void broadcast(void *argument)
 {
@@ -128,38 +130,84 @@ void gestionClientUDP(SocketPort info)
   creat_task(broadcast,&info,sizeof info);
 }
 
-/* Fonction principale */
-int main(int argc,char *argv[]){
+/** Gestion Serveur chat 
+   ________________**/
 
-// Analyse des arguments
 
-if(argc!=2){
-  fprintf(stderr,"Syntaxe : bridge <port>\n");
-  exit(-1);
+void envoieChat(int s,char * message){
+
+
+  write(s,message,strlen(message));
+  /* Termine la connexion */
+//  fclose(dialogue);
+  
+
+}
+
+void gestionChat(void *argument){
+
+int s=*(int *)argument;
+/* Obtient une structure de fichier */
+FILE *dialogue=fdopen(s,"a+");
+if(dialogue==NULL){ perror("gestionopen.fdopen"); exit(EXIT_FAILURE); }
+
+/* Echo */
+char ligne[MAX_LIGNE];
+  while(fgets(ligne,10,dialogue)!=NULL)
+  { 
+    PtCellClient ptr = list;
+    while (ptr != NULL) {
+        envoieChat(ptr->client.socket,ligne);
+        ptr = ptr->next;
+    }
   }
-char *service=argv[1];
+  /* Termine la connexion */
+  fclose(dialogue);
+}
+
+int gestion_chat_leger(int dialogue){
+  gestionChat(&dialogue);
+  return 0;
+}
+
+void lance_boucleseverChat(void *argument){
+
+  int s=*(int *)argument;
+  boucleServeur(s,gestion_chat_leger);
+
+}
+
+/* Fonction principale */
+int main(){
+
+char *service=PORT_DIFFUSION_UDP;
+
 #ifdef DEBUG
-fprintf(stdout,"Port : %s\n",service);
+fprintf(stdout,"Port TCP: %s\n",service);
 #endif
 
 // initialisation balise UDP
 
 int balise;
 balise=initialisationSocketUDP(service);
-
-printf("%d\n",balise);
-
 SocketPort Socket_Port;
 Socket_Port.balise = balise;
 Socket_Port.port=strtol(service,NULL,10) ;
-// SocketPort *Socket_Port_ptr =&Socket_Port;
 gestionClientUDP(Socket_Port);
 
-int s;
 // Initialisation du serveur
 
+int s;
 s=initialisationServeur(service,MAX_CONNEXIONS);
+
 // Traitement des connexions et des messages
+
+//Lance de la boucle du chat 
+
+int chat;
+chat=initialisationServeur(PORT_CHAT_TCP,MAX_CONNEXIONS);
+creat_task(lance_boucleseverChat,&chat,sizeof(int));
+
 /* Lancement de la boucle d'ecoute */
 boucleServeur(s,gestion_client_leger);
 
