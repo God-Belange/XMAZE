@@ -135,13 +135,7 @@ void gestionClientUDP(SocketPort info)
 
 
 void envoieChat(int s,char * message){
-
-
   write(s,message,strlen(message));
-  /* Termine la connexion */
-//  fclose(dialogue);
-  
-
 }
 
 void gestionChat(void *argument){
